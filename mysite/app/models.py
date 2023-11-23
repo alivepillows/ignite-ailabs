@@ -154,14 +154,13 @@ class DjangoSession(models.Model):
 
 
 class Ide(models.Model):
-    id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.IntegerField(blank=True, null=True)
     problem = models.CharField(max_length=255, blank=True, null=True)
     solution = models.CharField(max_length=255, blank=True, null=True)
     user_segment = models.CharField(max_length=255, blank=True, null=True)
     unique_value = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     class Meta:
         managed = False
