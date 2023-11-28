@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #custom apps
-    'app',
+    'user',
+    'idea',
+    'subasesmen',
     'rest_framework',
     'rest_framework.authtoken',
     'crispy_forms',
@@ -47,10 +49,13 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
         # Add other authentication classes as needed
-    ),
+    ],
+        'DEFAULT_PERMISSION_CLASSES':[
+        ]
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
