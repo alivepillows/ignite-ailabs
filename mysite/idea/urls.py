@@ -1,10 +1,8 @@
-from django.urls import path 
-from .views import IdeList, IdeDetail
-from rest_framework_simplejwt.views import TokenRefreshView
+# urls.py
+from rest_framework.routers import DefaultRouter
+from .views import IdeViewSet
 
+router = DefaultRouter()
+router.register(r'ide', IdeViewSet, basename='ide')
 
-urlpatterns = [
-    path('ide/', IdeList.as_view(), name='create-ide-list' ),
-    path('ide/<int:pk>/', IdeDetail.as_view(), name='ide-detail'),
-]
-
+urlpatterns = router.urls

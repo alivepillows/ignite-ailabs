@@ -8,19 +8,6 @@
 from django.db import models
 
 
-class Asesmen(models.Model):
-    total_nilai = models.IntegerField(blank=True, null=True)
-    tgl_mulai = models.DateField(blank=True, null=True)
-    tgl_akhir = models.DateField(blank=True, null=True)
-    time_expired = models.DateTimeField(blank=True, null=True)
-    image = models.CharField(max_length=255, blank=True, null=True)
-    sub_asesmen = models.ForeignKey('SubAsesmen', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'asesmen'
-
-
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -99,17 +86,6 @@ class AuthtokenToken(models.Model):
         managed = False
         db_table = 'authtoken_token'
 
-
-class Course(models.Model):
-    image = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    subcourse_id = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'course'
-
-
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
@@ -155,83 +131,9 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class Ide(models.Model):
-    name = models.CharField(max_length=50, blank=True, null=True)
-    email = models.CharField(max_length=255, blank=True, null=True)
-    problem = models.CharField(max_length=255, blank=True, null=True)
-    solution = models.CharField(max_length=255, blank=True, null=True)
-    user_segment = models.CharField(max_length=255, blank=True, null=True)
-    unique_value = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'ide'
-
-
-class Jawaban(models.Model):
-    jawaban = models.CharField(max_length=255, blank=True, null=True)
-    jenis = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = 'jawaban'
-
-
-class PivotAsesmen(models.Model):
-    asesmen = models.ForeignKey(Asesmen, models.DO_NOTHING, blank=True, null=True)
-    sub_asesmen = models.ForeignKey('SubAsesmen', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'pivot_asesmen'
-
-
-class PivotJawaban(models.Model):
-    quiz = models.ForeignKey('Quiz', models.DO_NOTHING, blank=True, null=True)
-    jawaban = models.ForeignKey(Jawaban, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'pivot_jawaban'
-
-
-class Quiz(models.Model):
-    image = models.CharField(max_length=255, blank=True, null=True)
-    title = models.CharField(max_length=255, blank=True, null=True)
-    soal = models.CharField(max_length=255, blank=True, null=True)
-    jawaban = models.ForeignKey(Jawaban, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'quiz'
-
-
-class SubAsesmen(models.Model):
-    pertanyaan = models.CharField(max_length=255, blank=True, null=True)
-    nilai = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'sub_asesmen'
-
-
-class SubCourse(models.Model):
-    image = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    deskripsi = models.TextField(blank=True, null=True)
-    benefits = models.TextField(blank=True, null=True)
-    subcourse = models.CharField(max_length=255, blank=True, null=True)
-    quiz_id = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'sub_course'
-
-
 class User(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)
-    image = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to='profile_image/')
     nik_ts = models.IntegerField(blank=True, null=True)
     unit_bisnis = models.CharField(max_length=255, blank=True, null=True)
     point = models.IntegerField(blank=True, null=True)
@@ -242,8 +144,8 @@ class User(models.Model):
     username = models.CharField(max_length=20, blank=True, null=True)
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    update_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         managed = False

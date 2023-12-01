@@ -3,7 +3,7 @@ from rest_framework import permissions
 from rest_framework import views
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
-from .models import User, Ide, SubAsesmen, Asesmen, PivotAsesmen
+from .models import User
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer
 from rest_framework.response import Response

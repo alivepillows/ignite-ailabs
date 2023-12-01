@@ -27,6 +27,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user.urls')),
     path('', include('idea.urls')),
-    path('', include('subasesmen.urls'))
+    path('', include('subasesmen.urls')),
+    path('', include('asesmen.urls')),
+    path('', include('pivotasesmen.urls')),
+    path('', include('course.urls')),
+    path('', include('materi.urls'))
 
 ]
