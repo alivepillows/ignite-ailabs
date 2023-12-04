@@ -22,12 +22,12 @@ class User(models.Model):
         db_table = 'user'
 
 class SubCourse(models.Model):
-    image = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
     deskripsi = models.TextField(blank=True, null=True)
     benefits = models.TextField(blank=True, null=True)
     subcourse = models.CharField(max_length=255, blank=True, null=True)
     quiz_id = models.IntegerField(blank=True, null=True)
+    video = models.FileField(upload_to='video_materi/', blank=True, null=True)
 
     class Meta:
         managed = False

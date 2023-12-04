@@ -39,3 +39,4 @@ class SubAsesmenUpdateDelete(APIView):
         subasesmen.delete()
         return Response({'detail': 'Data deleted'})
 
+

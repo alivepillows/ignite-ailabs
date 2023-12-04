@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'asesmen',
     'course',
     'materi',
+    'quiz',
     'pivotasesmen',
     'rest_framework',
     'rest_framework.authtoken',

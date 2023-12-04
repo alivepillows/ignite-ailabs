@@ -7,7 +7,7 @@ from rest_framework.response import Response
 class MateriList(APIView):
     def get(self, request, format=None):
         materi = SubCourse.objects.all()
-        if not materi.exists():
+        if not materi.exists(): 
             return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = SubCourseSerializer(materi, many=True)
         return Response(serializer.data)
