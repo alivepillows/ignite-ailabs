@@ -41,12 +41,10 @@ INSTALLED_APPS = [
     #custom apps
     'user',
     'idea',
-    'subasesmen',
     'asesmen',
     'course',
     'materi',
     'quiz',
-    'pivotasesmen',
     'rest_framework',
     'rest_framework.authtoken',
     'crispy_forms',
