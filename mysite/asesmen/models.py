@@ -6,7 +6,7 @@ class Asesmen(models.Model):
     tgl_mulai = models.DateField(blank=True, null=True)
     tgl_akhir = models.DateField(blank=True, null=True)
     time_expired = models.DateTimeField(blank=True, null=True)
-    image = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to='asesmen_image/', blank=True, null=True)
 
     class Meta:
         managed = False

@@ -133,7 +133,7 @@ class DjangoSession(models.Model):
 
 class User(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)
-    image = models.ImageField(upload_to='profile_image/')
+    image = models.ImageField(upload_to='user_image/')
     nik_ts = models.IntegerField(blank=True, null=True)
     unit_bisnis = models.CharField(max_length=255, blank=True, null=True)
     point = models.IntegerField(blank=True, null=True)

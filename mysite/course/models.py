@@ -30,7 +30,7 @@ class Rating(models.Model):
         db_table = 'rating'
 
 class Course(models.Model):
-    image = models.ImageField(upload_to='profil_image/', blank=True, null=True)
+    image = models.ImageField(upload_to='course_image/', blank=True, null=True)
     user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
     subcourse_id = models.IntegerField(blank=True, null=True)
     rating = models.ForeignKey('Rating', models.DO_NOTHING, blank=True, null=True)

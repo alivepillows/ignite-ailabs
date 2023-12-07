@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Asesmen, PivotAsesmen, SubAsesmen
 from .serializer import AsesmenSerializer, SubAsesmenSerializer, PivotAsesmenSerializer 
+from rest_framework.settings import api_settings 
+
 class AsesmenListView(APIView):
     def get(self, request, format=None):
             asesmen = Asesmen.objects.all()
@@ -46,12 +48,26 @@ class PivotAsesmenListView(APIView):
         serializer = PivotAsesmenSerializer(pivotasesmen, many=True)
         return Response(serializer.data)
     
-  def post(self, request, format=None):
+  def post(self, request, *args, **kwargs):
+        # Perform your calculation logic here
+        sub_asesmen_id = request.data.get('sub_asesmen')
+        sub_asesmen = SubAsesmen.objects.get(id=sub_asesmen_id)
+        calculated_total_nilai = sub_asesmen.nilai * 2  # Adjust this calculation based on your logic
+
+        # Create a new PivotAsesmen instance with the calculated value
+        request.data['total_nilai'] = calculated_total_nilai
         serializer = PivotAsesmenSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'detail': 'Data created'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+  
+  def get_success_headers(self, data):
+        try:
+            return {'Location': data[api_settings.URL_FIELD_NAME]}
+        except (TypeError, KeyError):
+            return {}
   
 class PivotAsesmenUpdateRetrieveDelete(APIView):
     def get(self, request, pk, format=None):
@@ -111,25 +127,3 @@ class SubAsesmenUpdateDelete(APIView):
         return Response({'detail': 'Data deleted'})
 
      
-class CalculateAsesmentValue(APIView):
-    def get(self, request, asesmen_id):
-        try:
-            # Assuming asesmen_id is passed in the URL parameters
-            asesmen = Asesmen.objects.get(id=asesmen_id)
-            
-            # Retrieve all related sub-asessments for the given assessment
-            sub_asessments = SubAsesmen.objects.filter(pivotasessmen__asesmen=asesmen)
-
-            # Calculate the total value of the assessment based on sub-asessments
-            total_value = sum(sub_asessment.nilai for sub_asessment in sub_asessments)
-
-            # Update the total value in the Asesmen model
-            asesmen.total_value = total_value
-            asesmen.save()
-
-            return Response({'total_value': total_value}, status=status.HTTP_200_OK)
-
-        except Asesmen.DoesNotExist:
-            return Response({'error': 'Asesmen not found'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
