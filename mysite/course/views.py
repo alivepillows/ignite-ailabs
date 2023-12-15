@@ -3,15 +3,26 @@ from rest_framework.views import APIView, status
 from .models import Course
 from .serializer import CourseSerializer
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPaginator(PageNumberPagination):
+    page_size= 5
+    page_query_param="page"
+    page_size_query_param="page_size"
 
 class CourseList(APIView):
-    def get(self, request, format=None):
-        course = Course.objects.all()
+    serializer = CourseSerializer
+    pagination_class = CustomPaginator
+    course = Course.objects.all()
 
-        if not course.exists():
-            return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = CourseSerializer(course, many=True)
-        return Response(serializer.data)
+    def get(self, request, format=None):
+            course = Course.objects.all()
+            paginator = self.pagination_class()
+            result_page = paginator.paginate_queryset(course, request)
+            serializer = CourseSerializer(result_page, many=True)
+            if not course.exists():
+               return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
+            return paginator.get_paginated_response(serializer.data)
     
     def post(self, request, format=None):
         serializer = CourseSerializer(data=request.data)
@@ -41,4 +52,6 @@ class CourseUpdateDelete(APIView):
         course = Course.objects.get(pk=pk)
         course.delete()
         return Response({'detail': 'Data deleted'}, status=status.HTTP_404_NOT_FOUND)
+
+
 

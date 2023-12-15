@@ -6,7 +6,17 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+import os
+from django.utils import timezone
 
+def user_image_path(instance, filename):
+    # Define the new filename here, for example, using the timestamp
+    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+    filename, file_extension = os.path.splitext(filename)
+    new_filename = f"user_{timestamp}{file_extension}"
+
+    # Return the full path for the file
+    return os.path.join('user_image/', new_filename)
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -133,7 +143,7 @@ class DjangoSession(models.Model):
 
 class User(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)
-    image = models.ImageField(upload_to='user_image/')
+    image = models.ImageField(upload_to=user_image_path, blank=True, null=True)
     nik_ts = models.IntegerField(blank=True, null=True)
     unit_bisnis = models.CharField(max_length=255, blank=True, null=True)
     point = models.IntegerField(blank=True, null=True)

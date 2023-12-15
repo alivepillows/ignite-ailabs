@@ -1,6 +1,15 @@
 from django.db import models
+import os
+from django.utils import timezone
 
-# Create your models here.
+def quiz_image_path(instance, filename):
+    # Define the new filename here, for example, using the timestamp
+    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+    filename, file_extension = os.path.splitext(filename)
+    new_filename = f"quiz_{timestamp}{file_extension}"
+
+    # Return the full path for the file
+    return os.path.join('quiz_image/', new_filename)
 
     
 class Jawaban(models.Model):
@@ -12,7 +21,7 @@ class Jawaban(models.Model):
         db_table = 'jawaban'
 
 class Quiz(models.Model):
-    image = models.ImageField(upload_to='image_quiz/', blank=True, null=True)
+    image = models.ImageField(upload_to= quiz_image_path, blank=True, null=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     soal = models.CharField(max_length=255, blank=True, null=True)
     jawaban = models.ForeignKey(Jawaban, models.DO_NOTHING, blank=True, null=True)

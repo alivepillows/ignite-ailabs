@@ -1,6 +1,16 @@
 from django.db import models
+import os
+from django.utils import timezone
 
-# Create your models here.
+def course_image_path(instance, filename):
+    # Define the new filename here, for example, using the timestamp
+    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+    filename, file_extension = os.path.splitext(filename)
+    new_filename = f"course_{timestamp}{file_extension}"
+
+    # Return the full path for the file
+    return os.path.join('course_image/', new_filename)
+
 class User(models.Model):
     email = models.CharField(max_length=255, blank=True, null=True)
     image = models.CharField(max_length=255, blank=True, null=True)
@@ -29,12 +39,20 @@ class Rating(models.Model):
         managed = False
         db_table = 'rating'
 
+class Benefit(models.Model):
+    deskripsi = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'benefit'
+
 class Course(models.Model):
-    image = models.ImageField(upload_to='course_image/', blank=True, null=True)
+    image = models.ImageField(upload_to = course_image_path, blank=True, null=True)
     user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
     subcourse_id = models.IntegerField(blank=True, null=True)
     rating = models.ForeignKey('Rating', models.DO_NOTHING, blank=True, null=True)
     level = models.TextField(blank=True, null=True)  # This field type is a guess.
+    benefit = models.ForeignKey(Benefit, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

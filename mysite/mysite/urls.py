@@ -30,6 +30,10 @@ urlpatterns = [
     path('', include('asesmen.urls')), 
     path('', include('course.urls')),
     path('', include('materi.urls')),
-    path('', include('quiz.urls'))
+    path('', include('quiz.urls')),
+    path('', include('rating.urls')),
+    path('', include('benefit.urls')),
+    path('', include('subcourse.urls')),
+    path('', include('berkas.urls'))
 
 ]

@@ -4,12 +4,26 @@ from .models import Quiz, Jawaban, PivotJawaban
 from .serializer import QuizSerializer, JawabanSerializer, PivotJawabanSerializer
 from rest_framework.response import Response
 from django.db.models import Sum
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPaginator(PageNumberPagination):
+    page_size= 5
+    page_query_param="page"
+    page_size_query_param="page_size"
 
 class QuizList(APIView):
+    serializer = QuizSerializer
+    pagination_class = CustomPaginator
+    quiz = Quiz.objects.all()
+
     def get(self, request, format=None):
-        quiz = Quiz.objects.all()
-        serializer = QuizSerializer(quiz, many=True)
-        return Response(serializer.data)
+            quiz = Quiz.objects.all()
+            paginator = self.pagination_class()
+            result_page = paginator.paginate_queryset(quiz, request)
+            serializer = QuizSerializer(result_page, many=True)
+            if not quiz.exists():
+               return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
+            return paginator.get_paginated_response(serializer.data)
     
     def post(self, request, format=None):
         serializer = QuizSerializer(data=request.data)

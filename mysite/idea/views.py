@@ -3,15 +3,27 @@ from rest_framework.views import APIView, status
 from .models import Ide
 from .serializers import IdeSerializer
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPaginator(PageNumberPagination):
+    page_size= 5
+    page_query_param="page"
+    page_size_query_param="page_size"
 
 class IdeList(APIView):
+    serializer = IdeSerializer
+    pagination_class = CustomPaginator
+    ide = Ide.objects.all()
+
     def get(self, request, format=None):
-        ide = Ide.objects.all()
-        if not ide.exists(): 
-            return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = IdeSerializer(ide, many=True)
-        return Response(serializer.data)
-    
+            ide = Ide.objects.all()
+            paginator = self.pagination_class()
+            result_page = paginator.paginate_queryset(ide, request)
+            serializer = IdeSerializer(result_page, many=True)
+            if not ide.exists():
+               return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
+            return paginator.get_paginated_response(serializer.data)
+
     def post(self, request, format=None):
         serializer = IdeSerializer(data=request.data)
         if serializer.is_valid():

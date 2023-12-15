@@ -1,34 +1,20 @@
 from django.db import models
+import os
+from django.utils import timezone
 
-# Create your models here.
-class User(models.Model):
-    email = models.CharField(max_length=255, blank=True, null=True)
-    image = models.CharField(max_length=255, blank=True, null=True)
-    nik_ts = models.IntegerField(blank=True, null=True)
-    unit_bisnis = models.CharField(max_length=255, blank=True, null=True)
-    point = models.IntegerField(blank=True, null=True)
-    course_id = models.IntegerField(blank=True, null=True)
-    role = models.TextField(blank=True, null=True)  # This field type is a guess.
-    password = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    username = models.CharField(max_length=20, blank=True, null=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    update_at = models.DateTimeField(blank=True, null=True)
+def user_materi_path(instance, filename):
+    # Define the new filename here, for example, using the timestamp
+    timestamp = timezone.now().strftime('%Y%m%d%H%M%S')
+    filename, file_extension = os.path.splitext(filename)
+    new_filename = f"materi_{timestamp}{file_extension}"
+
+    # Return the full path for the file
+    return os.path.join('video_materi/', new_filename)
+
+class Materi(models.Model):
+    judul = models.CharField(max_length=255, blank=True, null=True)
+    video = models.FileField(upload_to=user_materi_path, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'user'
-
-class SubCourse(models.Model):
-    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    deskripsi = models.TextField(blank=True, null=True)
-    benefits = models.TextField(blank=True, null=True)
-    subcourse = models.CharField(max_length=255, blank=True, null=True)
-    quiz_id = models.IntegerField(blank=True, null=True)
-    video = models.FileField(upload_to='video_materi/', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'sub_course'
+        db_table = 'materi'

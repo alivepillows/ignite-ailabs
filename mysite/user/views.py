@@ -7,20 +7,27 @@ from .models import User
 from rest_framework.decorators import api_view
 from .serializers import UserSerializer
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
-
+class CustomPaginator(PageNumberPagination):
+    page_size= 5
+    page_query_param="page"
+    page_size_query_param="page_size"
 
 class UserListCreate(APIView):
+    serializer = UserSerializer
+    pagination_class = CustomPaginator
+    user = User.objects.all()
+
     def get(self, request, format=None):
-        queryset = User.objects.all()
-
-        # Check if the queryset is empty
-        if not queryset.exists():
-            return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
+            user = User.objects.all()
+            paginator = self.pagination_class()
+            result_page = paginator.paginate_queryset(user, request)
+            serializer = UserSerializer(result_page, many=True)
+            if not user.exists():
+               return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
+            return paginator.get_paginated_response(serializer.data)
+    
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

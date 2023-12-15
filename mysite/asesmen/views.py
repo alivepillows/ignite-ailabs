@@ -6,12 +6,24 @@ from rest_framework import status
 from .models import Asesmen, PivotAsesmen, SubAsesmen
 from .serializer import AsesmenSerializer, SubAsesmenSerializer, PivotAsesmenSerializer 
 from rest_framework.settings import api_settings 
+from rest_framework.pagination import PageNumberPagination
+
+class CustomPaginator(PageNumberPagination):
+    page_size= 5
+    page_query_param="page"
+    page_size_query_param="page_size"
 
 class AsesmenListView(APIView):
+    serializer = AsesmenSerializer
+    pagination_class = CustomPaginator
+    asesmen = Asesmen.objects.all()
+
     def get(self, request, format=None):
             asesmen = Asesmen.objects.all()
-            serializer = AsesmenSerializer(asesmen, many=True)
-            return Response(serializer.data)
+            paginator = self.pagination_class()
+            result_page = paginator.paginate_queryset(asesmen, request)
+            serializer = AsesmenSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
         
     def post(self, request, format=None):
             serializer = AsesmenSerializer(data=request.data)

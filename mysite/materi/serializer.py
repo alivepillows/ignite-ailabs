@@ -1,8 +1,8 @@
 # serializers.py
 from rest_framework import serializers
-from .models import SubCourse
+from .models import Materi
 
-class SubCourseSerializer(serializers.ModelSerializer):
+class MateriSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SubCourse
+        model = Materi
         fields = '__all__'
