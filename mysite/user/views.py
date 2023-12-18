@@ -1,6 +1,4 @@
-from rest_framework import status
-from rest_framework import permissions
-from rest_framework import views
+from rest_framework import (status, permissions, views, generics)
 from django.contrib.auth.hashers import make_password
 from rest_framework.views import APIView
 from .models import User
@@ -8,6 +6,11 @@ from rest_framework.decorators import api_view
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import UserRegisterSerializer
 
 class CustomPaginator(PageNumberPagination):
     page_size= 5
@@ -71,4 +74,25 @@ class UserRetrieveUpdateDelete(APIView):
             return Response({'detail': 'Data deleted'}, status=status.HTTP_204_NO_CONTENT)
         except User.DoesNotExist:
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-  
+
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = UserRegisterSerializer
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+
+        myCourse = [
+            {"id_course" : 1,"judul" : "Kursus MySql"},
+            {"id_course" : 2,"judul" : "Kursus MongoDB"}
+        ]
+
+        token = super().get_token(user)
+
+        token['user'] = { "username" : user.username , "email" : user.email , "myCourses" : myCourse}
+
+        return token
+    
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
