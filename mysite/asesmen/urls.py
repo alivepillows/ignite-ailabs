@@ -10,5 +10,5 @@ urlpatterns = [
     path('pivotasesmen/<int:pk>/', PivotAsesmenUpdateRetrieveDelete.as_view(), name= "subasesmen-details"),
     path('subasesmen/', SubAsesmenList.as_view(), name= "create-asesmen-list"),
     path('subasesmen/<int:pk>/', SubAsesmenUpdateDelete.as_view(), name= "subasesmen-details"),
-    # path('getvalue/', CalculateAsesmentValue.as_view(), name="get-value-asesment")
+    # path('getvalue/', CalculateAsesmentValue.as_view(), name="get-value-asesment")    
 ]
