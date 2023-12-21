@@ -4,6 +4,7 @@ from .models import Course
 from .serializer import CourseSerializer
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+import json
 
 class CustomPaginator(PageNumberPagination):
     page_size= 5
@@ -16,13 +17,22 @@ class CourseList(APIView):
     course = Course.objects.all()
 
     def get(self, request, format=None):
-            course = Course.objects.all()
-            paginator = self.pagination_class()
-            result_page = paginator.paginate_queryset(course, request)
-            serializer = CourseSerializer(result_page, many=True)
-            if not course.exists():
-               return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
-            return paginator.get_paginated_response(serializer.data)
+        course = Course.objects.all()
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(course, request)
+
+        if page is not None:
+            serializer = self.serializer(page, many=True)
+            response = paginator.get_paginated_response(serializer.data)
+
+            # Add custom metadata to the response
+            response.data['page_number'] = paginator.page.number
+            response.data['total_pages'] = paginator.page.paginator.num_pages
+
+            return response
+
+        serializer = self.serializer(course, many=True)
+        return Response(serializer.data)
     
     def post(self, request, format=None):
         serializer = CourseSerializer(data=request.data)

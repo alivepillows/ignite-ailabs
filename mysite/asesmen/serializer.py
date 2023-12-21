@@ -2,10 +2,7 @@
 from rest_framework import serializers
 from .models import Asesmen, PivotAsesmen, SubAsesmen
 
-class AsesmenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Asesmen
-        fields = '__all__'
+
 
 class PivotAsesmenSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,4 +12,10 @@ class PivotAsesmenSerializer(serializers.ModelSerializer):
 class SubAsesmenSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubAsesmen
+        fields = '__all__'
+
+class AsesmenSerializer(serializers.ModelSerializer):
+ sub_asesmen = SubAsesmenSerializer(source= "id", read_only=True)
+ class Meta:
+        model = Asesmen
         fields = '__all__'
