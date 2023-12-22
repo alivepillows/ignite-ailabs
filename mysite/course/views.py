@@ -4,7 +4,7 @@ from .models import Course
 from .serializer import CourseSerializer
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-import json
+
 
 class CustomPaginator(PageNumberPagination):
     page_size= 5

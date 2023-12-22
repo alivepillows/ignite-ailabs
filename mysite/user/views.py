@@ -81,15 +81,9 @@ class UserRegistrationView(generics.CreateAPIView):
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
-
-        myCourse = [
-            {"id_course" : 1,"judul" : "Kursus MySql"},
-            {"id_course" : 2,"judul" : "Kursus MongoDB"}
-        ]
-
         token = super().get_token(user)
 
-        token['user'] = { "username" : user.username , "email" : user.email , "myCourses" : myCourse}
+        token['user'] = { "username" : user.username , "email" : user.email }
 
         return token
     

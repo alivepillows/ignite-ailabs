@@ -12,27 +12,28 @@ def asesmen_image_path(instance, filename):
     # Return the full path for the file
     return os.path.join('asesmen_image/', new_filename)
 
-
-class Asesmen(models.Model):
-    tgl_mulai = models.DateField(blank=True, null=True)
-    tgl_akhir = models.DateField(blank=True, null=True)
-    time_expired = models.DateTimeField(blank=True, null=True)
-    image = models.ImageField(upload_to= asesmen_image_path, blank=True, null=True)
-    sub_asesmen = models.ForeignKey('SubAsesmen', models.DO_NOTHING, blank=True, null=True)
-    title = models.CharField(max_length=200, blank=True, null=True)
-
-
-    class Meta:
-        managed = False
-        db_table = 'asesmen'
-
 class SubAsesmen(models.Model):
+    #id = models.AutoField(db_column='id', primary_key=True)
     pertanyaan = models.CharField(max_length=255, blank=True, null=True)
     nilai = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'sub_asesmen'
+
+
+class Asesmen(models.Model):
+    tgl_mulai = models.DateField(blank=True, null=True)
+    tgl_akhir = models.DateField(blank=True, null=True)
+    time_expired = models.DateTimeField(blank=True, null=True)
+    image = models.ImageField(upload_to= asesmen_image_path, blank=True, null=True)
+    sub_asesmen = models.ForeignKey(SubAsesmen, models.DO_NOTHING, blank=True, null= True)
+    title = models.CharField(max_length=200, blank=True, null=True)
+
+
+    class Meta:
+        managed = False
+        db_table = 'asesmen'
 
 class PivotAsesmen(models.Model):
     asesmen = models.ForeignKey(Asesmen, models.DO_NOTHING, blank=True, null=True)

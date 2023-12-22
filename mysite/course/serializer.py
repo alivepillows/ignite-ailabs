@@ -1,37 +1,32 @@
-# serializers.py
-
 from rest_framework import serializers
-from .models import Course, SubCourse, Rating, Benefit, User
+from .models import Course, Rating, Benefit, User
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
-        fields = '__all__'
+        fields ='__all__'
+        extra_kwargs = {'password': {'write_only': True}}
 
 class RatingSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Rating
-        fields = '__all__'
+        fields = ['user', 'bintang']
 
 class BenefitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Benefit
-        fields = '__all__'
-
-class SubCourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCourse
-        fields = '__all__'
+        fields = ['id', 'deskripsi']
 
 class CourseSerializer(serializers.ModelSerializer):
-    #usedr = UserSerializer()
-    rating = RatingSerializer(source="id", read_only=True)
-    benefit= BenefitSerializer(source="id", read_only=True)
-    subcourse = SubCourseSerializer(source="id", read_only=True)
+    rating = RatingSerializer(many = True)
+    benefit = BenefitSerializer(many = True)
+    # user = UserSerializer(read_only=True)
 
     class Meta:
         model = Course
-        fields = ['id','image','user','subcourse', 'rating', 'level', 'benefit', 'subcourse']
-
-    
+        fields = '__all__'
+     
+    def create(self, validated_data):
+        import pdb ; pdb.set_trace()
+        return super().create(validated_data)

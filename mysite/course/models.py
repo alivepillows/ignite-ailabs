@@ -90,10 +90,12 @@ class SubCourse(models.Model):
 class Course(models.Model):
     image = models.ImageField(upload_to = course_image_path, blank=True, null=True)
     user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    subcourse = models.ForeignKey('SubCourse', models.DO_NOTHING, blank=True, null=True)
     rating = models.ForeignKey('Rating', models.DO_NOTHING, blank=True, null=True)
     level = models.TextField(blank=True, null=True)  # This field type is a guess.
     benefit = models.ForeignKey(Benefit, models.DO_NOTHING, blank=True, null=True)
+    subcourse = models.ForeignKey('SubCourse', models.DO_NOTHING, blank=True, null=True)
+    time_do = models.DurationField(blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         managed = False

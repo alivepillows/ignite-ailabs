@@ -24,9 +24,38 @@ class RatingList(APIView):
                return Response({'detail': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
             return paginator.get_paginated_response(serializer.data)
     
-    def post(self, request, format=None):
-        serializer = RatingSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        course_id = kwargs.get('course_id')
+        data = request.data if isinstance(request.data, list) else [request.data]
+
+        # Validate and create each rating
+        for rating_data in data:
+            rating_data['course'] = course_id
+            serializer = self.get_serializer(data=rating_data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class RatingUpdate(APIView):
+     def get(self, request, pk, format=None):
+        try:
+            rating = Rating.objects.get(pk=pk)
+            serializer = RatingSerializer(rating)
+            return Response(serializer.data)
+        except Rating.DoesNotExist:
+            return Response({'detail': 'not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+     def put(self, request, pk, format=None):
+        rating = Rating.objects.get(pk=pk)
+        serializer = RatingSerializer(rating, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'detail': 'Data created'}, status=status.HTTP_201_CREATED)
+            return Response({'detail': 'Data updated'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+     def delete(self, request, pk, format=None):
+        rating = Rating.objects.get(pk=pk)
+        rating.delete()
+        return Response({'detail': 'Data deleted'})
