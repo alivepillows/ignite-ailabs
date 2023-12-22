@@ -19,14 +19,13 @@ class BenefitSerializer(serializers.ModelSerializer):
         fields = ['id', 'deskripsi']
 
 class CourseSerializer(serializers.ModelSerializer):
-    rating = RatingSerializer(many = True)
-    benefit = BenefitSerializer(many = True)
+    rating = RatingSerializer()
+    benefit = BenefitSerializer()
     # user = UserSerializer(read_only=True)
 
     class Meta:
         model = Course
         fields = '__all__'
      
-    def create(self, validated_data):
-        import pdb ; pdb.set_trace()
-        return super().create(validated_data)
+
+
