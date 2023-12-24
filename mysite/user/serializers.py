@@ -13,26 +13,22 @@ class UserSerializer(serializers.ModelSerializer):
         fields ='__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class SignUpSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only =True  )
+    # tokens = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'nama_depan', 'nama_belakang', 'image' , 'nomor', 'NIK' ,'Unit', 'role')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'first_name', 'last_name',
+                  'username', 'email', 'password', 'phone_number','tokens']
+        read_only_fields= ['id',]
+        # extra_kwargs = {
+        #     'password' : {'write_only':True}
+        # }
+        
+        
+class EmailVerificationSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=555)
 
-    def create(self, validated_data):
-        user = User.objects.create(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            password = make_password(validated_data['password']),
-            nama_depan=validated_data['nama_depan'],
-            nama_belakang=validated_data['nama_belakang'],
-            # image=validated_data['image'],
-            nomor=validated_data['nomor'],
-            NIK=validated_data['NIK'],
-            Unit=validated_data['Unit'],
-            role=validated_data['role']
-        )
-    
-        user.save()
-
-        return User(**validated_data)
+    class Meta:
+        model = User
+        fields = ['token']
