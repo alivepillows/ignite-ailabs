@@ -49,35 +49,20 @@ class UserManager(UserManager):
         return user
 
 class User(models.Model):
-    email = models.CharField(max_length=255, blank=True, null=True)
-    image = models.CharField(max_length=255, blank=True, null=True)
-    nik_ts = models.IntegerField(blank=True, null=True)
-    unit_bisnis = models.CharField(max_length=255, blank=True, null=True)
-    point = models.IntegerField(blank=True, null=True)
-    course_id = models.IntegerField(blank=True, null=True)
-    role = models.TextField(blank=True, null=True)  # This field type is a guess.
-    password = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    username = models.CharField(max_length=20, blank=True, null=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    update_at = models.DateTimeField(blank=True, null=True)
-    is_verified = models.BooleanField(default = False)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-    
-    def tokens(self):
-        refresh = RefreshToken.for_user(self)
-        return({
-            'refresh': str(refresh),
-            'refresh': str(refresh.access_token),
-        })
-  
+    id_user = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=255)
+    birth_date = models.DateField(db_column='birth__date')  # Field renamed because it contained more than one '_' in a row.
+    address = models.CharField(max_length=50)
+    nik = models.IntegerField()
+    unit = models.CharField(max_length=50)
+    role = models.TextField()  # This field type is a guess.
+    image = models.CharField(max_length=225, blank=True, null=True)
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    updateat = models.DateTimeField(db_column='updateAt', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'user'
-
-  

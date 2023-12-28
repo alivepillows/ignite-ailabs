@@ -152,7 +152,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ignite_ailabs',
+        'NAME': 'ignite',
         'USER' : 'postgres',
         'PASSWORD':'admin',
         'HOST': 'localhost',

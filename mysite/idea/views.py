@@ -4,6 +4,8 @@ from .models import Ide
 from .serializers import IdeSerializer
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from .utils import Util
+from rest_framework import response
 
 class CustomPaginator(PageNumberPagination):
     page_size= 5
@@ -11,7 +13,7 @@ class CustomPaginator(PageNumberPagination):
     page_size_query_param="page_size"
 
 class IdeList(APIView):
-    serializer = IdeSerializer
+    serializer_class = IdeSerializer
     pagination_class = CustomPaginator
     ide = Ide.objects.all()
 
@@ -25,11 +27,20 @@ class IdeList(APIView):
             return paginator.get_paginated_response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = IdeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'detail': 'Data created'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        ide = serializer.data
+
+        absurl = 'http://127.0.0.1:8000/register'
+        email_body = 'Hi '+ide['name'] + \
+            ' your idea is matter for Ignite! if you want to be telsiger, please use the link to register \n' + absurl
+        data = {'email_body': email_body, 'to_email': ide['email'],
+                'email_subject': 'Thanks for your idea!'}
+        
+        Util.send_email(data=data)
+        return response.Response({'ide_data': ide}, status=status.HTTP_201_CREATED)
 
 class IdeUpdateRetrieveDelete(APIView):
     def get(self, request, pk, format=None):
@@ -52,4 +63,10 @@ class IdeUpdateRetrieveDelete(APIView):
         ide = Ide.objects.get(pk=pk)
         ide.delete()
         return Response({'detail': 'Data deleted'})
+    
+
+
+       
+        
+        
 

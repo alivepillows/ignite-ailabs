@@ -37,7 +37,7 @@ class Asesmen(models.Model):
 
 class PivotAsesmen(models.Model):
     asesmen = models.ForeignKey(Asesmen, models.DO_NOTHING, blank=True, null=True)
-    sub_asesmen = models.ForeignKey(SubAsesmen, models.DO_NOTHING, blank=True, null=True)
+    sub_asesmen = models.ManyToManyField(SubAsesmen)
     total_nilai = models.IntegerField(blank=True, null=True)
 
     class Meta:

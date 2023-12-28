@@ -3,24 +3,24 @@ from django.db import models
 # Create your models here.
 
 class User(models.Model):
-    email = models.CharField(max_length=255, blank=True, null=True)
-    image = models.CharField(max_length=255, blank=True, null=True)
-    nik_ts = models.IntegerField(blank=True, null=True)
-    unit_bisnis = models.CharField(max_length=255, blank=True, null=True)
-    point = models.IntegerField(blank=True, null=True)
-    course_id = models.IntegerField(blank=True, null=True)
-    role = models.TextField(blank=True, null=True)  # This field type is a guess.
-    password = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
-    username = models.CharField(max_length=20, blank=True, null=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    update_at = models.DateTimeField(blank=True, null=True)
+    id_user = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=255)
+    birth_date = models.DateField(db_column='birth__date')  # Field renamed because it contained more than one '_' in a row.
+    address = models.CharField(max_length=50)
+    nik = models.IntegerField()
+    unit = models.CharField(max_length=50)
+    role = models.TextField()  # This field type is a guess.
+    image = models.CharField(max_length=225, blank=True, null=True)
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    updateat = models.DateTimeField(db_column='updateAt', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'user'
+
 
 class Berkas(models.Model):
     file = models.CharField(max_length=255, blank=True, null=True)
@@ -50,13 +50,29 @@ class Quiz(models.Model):
         managed = False
         db_table = 'quiz'
 
+
+class Course(models.Model):
+    id_course = models.AutoField(primary_key=True)
+    theme_course = models.CharField(max_length=100, blank=True, null=True)
+    cover = models.CharField(max_length=100, blank=True, null=True)
+    level = models.TextField(blank=True, null=True)  # This field type is a guess.
+    id_user = models.ForeignKey('User', models.DO_NOTHING, db_column='id_user')
+    status = models.TextField(blank=True, null=True)  # This field type is a guess.
+    description = models.CharField(max_length=200, blank=True, null=True)
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    updateat = models.DateTimeField(db_column='updateAt', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'course'
+        
+
 class SubCourse(models.Model):
-    user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    deskripsi = models.TextField(blank=True, null=True)
-    judul = models.CharField(max_length=255, blank=True, null=True)
-    berkas = models.ForeignKey(Berkas, models.DO_NOTHING, blank=True, null=True)
-    point = models.IntegerField(blank=True, null=True)
-    quiz = models.ForeignKey(Quiz, models.DO_NOTHING, blank=True, null=True)
+    id_sub_course = models.AutoField(primary_key=True)
+    sub_title = models.CharField(max_length=100, blank=True, null=True)
+    id_course = models.ForeignKey(Course, models.DO_NOTHING, db_column='id_course')
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    updateat = models.DateTimeField(db_column='updateAt', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

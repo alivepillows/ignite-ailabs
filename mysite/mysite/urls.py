@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from rest_framework.authtoken import views
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
@@ -27,28 +28,20 @@ from django.urls import path, include
 from .swagger import BothHttpAndHttpsSchemaGenerator
 import json
 
-schema_view = get_schema_view(
-   openapi.Info(
-      title="Email-Verify API",
-      default_version='v1',
-      description="An API that will allow users to send sign up and the API will verify there emails by sending the emails usung the email submitted on sign up  ",
+from user.views import (MyTokenObtainPairView)
 
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="user@email.com"),
-      license=openapi.License(name="BSD License"),
-   ),
-
-   permission_classes=[permissions.AllowAny],
+from rest_framework_simplejwt.views import (
+    # TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView
 )
-
-
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('', include('user.urls')),
+    path('api-token-auth', views.obtain_auth_token),
     path('', include('idea.urls')),
     path('', include('asesmen.urls')), 
     path('', include('course.urls')),
@@ -58,6 +51,10 @@ urlpatterns = [
     path('', include('benefit.urls')),
     path('', include('subcourse.urls')),
     path('', include('berkas.urls')),
+    path('api/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include('user.urls')),
+    
 
 ]
